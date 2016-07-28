@@ -15,7 +15,7 @@ port = 6667
 botnick = 'jeeves-srv'
 ident = 'jeeves'
 real_name = 'Channel and Notify bot'
-home_dir = '/home/ircbot'
+home_dir = '/home/ircbot/'
 from_addy = 'notifier@example.com'
 to_addy = '1234567890@txt.verizon.com'
 ```
