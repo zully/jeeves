@@ -54,6 +54,7 @@ def send_message(from_addy, to_addy, message):
 # process data for notification agent
 def get_masks(irc, ison, nicks):
     should_execute = False
+    
     for i in xrange(3):
         ison.pop(0)
     if ison[0] == ':':
@@ -61,6 +62,8 @@ def get_masks(irc, ison, nicks):
     else:
         ison[0] = ison[0].lstrip(':')
     if len(ison) > 0:
+        for i in range(len(ison)):
+            ison[i] = ison[i].lower()
         for n in ison:
             if nicks[n][0] == 0:
                 should_execute = True
@@ -81,7 +84,7 @@ def get_masks(irc, ison, nicks):
 def notify_user(to_addy, from_addy, split_line, nicks):
     ident = split_line[4]
     ip = split_line[5]
-    nick = split_line[7]
+    nick = split_line[7].lower()
     name = split_line[10]
     if nicks[nick][0] == 1:
         if nicks[nick][1] in ident or nicks[nick][1] == '':

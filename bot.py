@@ -6,15 +6,9 @@ from operations import *
 from notify import *
 import config, signal
 
-def signal_handler(signum, frame):
-    if signum == 15:
-        raise KeyboardInterrupt('Exit Gracefully')
-    return
-
 def main():
-    # Configure logging
-    logging.basicConfig(filename=('%s%s.log' % (config.home_dir, config.botnick)), filemode='w', \
-    format='%(asctime)s %(message)s', datefmt='%b %d %H:%M:%S', level=logging.DEBUG)
+    # Set up logging
+    set_up_logs(config.home_dir, config.botnick)
 
     # read configs
     nicks = read_notifylist(config.home_dir + 'notify.list')
@@ -52,6 +46,9 @@ def main():
             irc.command('QUIT Goodbye.')
             logging.info('LOG: Goodbye.')
             sys.exit(0)
+        except: # Handle other exceptions such as attribute errors
+            logging.exception('LOG: Unexpected error: ', sys.exc_info()[0])
+            sys.exit(1)
     return
 
 signal.signal(signal.SIGTERM, signal_handler)
