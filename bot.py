@@ -27,12 +27,12 @@ def main():
                 split_line = line.split()
                 action = split_line[1]
     
-                # execute on JOIN/PART or PRIVMSG
-                if action == 'JOIN' or action == 'PART' or action == 'PRIVMSG':
-                    perform_op(irc, split_line, config.botnick, master)
                 # execute on ISOP return for notifier
-                elif action == '303':
+                if action == '303':
                     nicks = get_masks(irc, split_line, nicks)
+                # execute on JOIN/PART or PRIVMSG
+                elif action == 'JOIN' or action == 'PART' or action == 'PRIVMSG':
+                    perform_op(irc, split_line, config.botnick, master)
                 # execute on who return for notifier
                 elif action == '352':
                     nicks = notify_user(config.to_addy, config.from_addy, split_line, nicks)
@@ -40,7 +40,7 @@ def main():
                 elif line.find('PING :') != -1:
                     send_pong(irc, line)
                 # initiate startup sequence once connected
-                elif action == 'NOTICE' and split_line[2] == config.botnick and split_line[3] == ':on':
+                elif action == '255':
                     start_up(irc, config.channels, nicks.keys(), config.server)
         except KeyboardInterrupt:
             irc.command('QUIT Goodbye.')

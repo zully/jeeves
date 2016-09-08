@@ -54,14 +54,18 @@ def send_message(from_addy, to_addy, message):
 # process data for notification agent
 def get_masks(irc, ison, nicks):
     should_execute = False
-    
+    # pop off the object before nicks
     for i in xrange(3):
         ison.pop(0)
+    # if the nicklist is empty, pop off the last object
     if ison[0] == ':':
         ison.pop(0)
+    # otherwise strip the : of the first nick
     else:
         ison[0] = ison[0].lstrip(':')
+    # if the nicklist is not empty
     if len(ison) > 0:
+        # for each item in the nicklist, make the nick lowercase
         for i in range(len(ison)):
             ison[i] = ison[i].lower()
         for n in ison:
