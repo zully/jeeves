@@ -43,7 +43,7 @@ def main():
                 elif action == '255':
                     start_up(irc, config.channels, nicks.keys(), config.server)
                 # wait and then reconnect on disconnect
-                elif action == 'CodeForDisconnect':
+                elif action == 'Code For Disconnect/Server Full/Etc': # need to watch log for codes
                     sleep(300)
                     irc.connect(config.server, config.port, config.botnick, config.ident, config.real_name)
         except KeyboardInterrupt:
