@@ -1,6 +1,6 @@
 # jeeves
 
-jeeves is an IRC bot (under heavy early development) written in python.  A config.py, notify.list, and master.conf file are required.  Sample files are below:
+jeeves is an IRC bot (under early development) written in python.  Jeeves will remain online and text/e-mail you when your friends connect to IRC.  A config.py, notify.list, and master.conf file are required for operation.  A sample service file is also included.  Sample files are below:
 
 ### config.py
 ```python
@@ -15,7 +15,7 @@ port = 6667
 botnick = 'jeeves-srv'
 ident = 'jeeves'
 real_name = 'Channel and Notify bot'
-home_dir = '/home/ircbot/'
+home_dir = '/home/user/jeeves/'
 from_addy = 'notifier@example.com'
 to_addy = '1234567890@txt.verizon.com'
 ```
@@ -39,4 +39,22 @@ nick::example.com:192.168.:10.10.
 # A single line with the master (owner's) information
 ## ident and any number of IP's or hostnames
 ident:example.com:192.168.:10.10.
+```
+
+### jeeves.service
+```
+[Unit]
+Description=Jeeves - IRC bot service
+
+[Service]
+Environment="PYTHONDONTWRITEBYTECODE=1"
+ExecStart=/usr/bin/python /home/user/jeeves/bot.py
+ExecStop=/bin/kill $MAINPID
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=on-failure
+RestartSec=60s
+
+[Install]
+WantedBy=multi-user.target
 ```
