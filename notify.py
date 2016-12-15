@@ -47,6 +47,7 @@ def send_message(from_addy, to_addy, message):
     try:
         smtpObj = smtplib.SMTP('localhost')
         smtpObj.sendmail(to_addy, from_addy, message)
+        logging.info('LOG: Message sent! MSG: %s' % message)
     except:
         logging.exception('LOG: Unexpected error: ', sys.exc_info()[0])
     return

@@ -42,6 +42,10 @@ def main():
                 # initiate startup sequence once connected
                 elif action == '255':
                     start_up(irc, config.channels, nicks.keys(), config.server)
+                # wait and then reconnect on disconnect
+                elif action == 'CodeForDisconnect':
+                    sleep(300)
+                    irc.connect(config.server, config.port, config.botnick, config.ident, config.real_name)
         except KeyboardInterrupt:
             irc.command('QUIT Goodbye.')
             logging.info('LOG: Goodbye.')

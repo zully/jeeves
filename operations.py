@@ -66,7 +66,7 @@ def perform_op(irc, split_line, botnick, master):
 def threaded_timer(irc, nicks):
     while True:
         irc.command('ISON %s' % nicks)
-        time.sleep(60)
+        time.sleep(122)
     return
 
 # send pong response to server
