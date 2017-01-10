@@ -45,8 +45,8 @@ def main():
                     start_up(irc, config.channels, nicks.keys(), config.server)
                 # wait and then reconnect on disconnect
                 elif line.find('ERROR :Closing Link') != -1 or line.find('ERROR :Your host is trying to (re)connect too fast') != -1:
-                    logging.info('LOG: Waiting 300 seconds before attempting reconnect.')
-                    sleep(300)
+                    logging.info('LOG: Waiting 120 seconds before attempting reconnect.')
+                    sleep(120)
                     irc.connect(config.server, config.port, config.botnick, config.ident, config.real_name)
         except KeyboardInterrupt:
             irc.command('QUIT Goodbye.')
