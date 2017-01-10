@@ -4,6 +4,7 @@
 from irc import *
 from operations import *
 from notify import *
+from time import sleep
 import config, signal
 
 def main():
