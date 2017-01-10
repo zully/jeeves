@@ -43,7 +43,8 @@ def main():
                 elif action == '255':
                     start_up(irc, config.channels, nicks.keys(), config.server)
                 # wait and then reconnect on disconnect
-                elif action == 'Code For Disconnect/Server Full/Etc': # need to watch log for codes
+                elif line.find('ERROR :Closing Link') != -1 or line.find('ERROR :Your host is trying to (re)connect too fast') != -1:
+                    logging.info('LOG: Waiting 300 seconds before attempting reconnect.')
                     sleep(300)
                     irc.connect(config.server, config.port, config.botnick, config.ident, config.real_name)
         except KeyboardInterrupt:
