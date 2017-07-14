@@ -7,14 +7,15 @@ from notify import *
 from time import sleep
 import config, signal
 
+# Set up logging
+set_up_logs(config.home_dir, config.botnick)
+
 def main():
-    # Set up logging
-    set_up_logs(config.home_dir, config.botnick)
 
     # read configs
     nicks = read_notifylist(config.home_dir + 'notify.list')
     master = read_master(config.home_dir + 'master.conf')
-    
+
     # configure IRC object and connect
     irc = IRC()
     irc.connect(config.server, config.port, config.botnick, config.ident, config.real_name)
@@ -59,6 +60,7 @@ def main():
     return
 
 signal.signal(signal.SIGTERM, signal_handler)
+signal.signal(signal.SIGHUP, signal_handler)
 
 if __name__ == '__main__':
     main()

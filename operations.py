@@ -8,7 +8,7 @@ def set_up_logs(home_dir, botnick):
     #datefmt='%b %d %H:%M:%S', level=logging.DEBUG)
 
     # Configure logging
-    logging.basicConfig(filename=('%s%s.log' % (home_dir, botnick)), \
+    logging.basicConfig(filename=('%s%s.log' % (home_dir, botnick.lower())), \
     format='%(asctime)s %(message)s', datefmt='%b %d %H:%M:%S', level=logging.DEBUG)    
     return
 
@@ -31,14 +31,14 @@ def perform_op(irc, split_line, botnick, master):
             logging.info('CHAN: %s %s: %s' % (split_line[2], nick, msg))
         else:
             logging.info('PRIV: %s: %s' % (nick, msg))
-    if split_line[1] == 'PRIVMSG' and 'hello' in msg:
-        if '#' in split_line[2]:
-            logging.info('LOG: Answered %s with "Hello!" on %s' % (nick, split_line[2]))
-            target = split_line[2]
-        else:
-            logging.info('LOG: Answered %s with "Hello!" in PRIVMSG' % nick)
-            target = nick
-        irc.command('PRIVMSG %s %s' % (target, 'Hello!'))
+    #if split_line[1] == 'PRIVMSG' and 'hello' in msg:
+    #    if '#' in split_line[2]:
+    #        logging.info('LOG: Answered %s with "Hello!" on %s' % (nick, split_line[2]))
+    #        target = split_line[2]
+    #    else:
+    #        logging.info('LOG: Answered %s with "Hello!" in PRIVMSG' % nick)
+    #        target = nick
+    #    irc.command('PRIVMSG %s %s' % (target, 'Hello!'))
     elif split_line[1] == 'JOIN':
         if botnick != nick:
             if master[0] in ident:
