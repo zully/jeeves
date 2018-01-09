@@ -5,7 +5,7 @@ from irc import *
 from operations import *
 from notify import *
 from time import sleep
-import config, signal
+import config, signal, thread
 
 # Set up logging
 set_up_logs(config.home_dir, config.botnick)
@@ -44,12 +44,14 @@ def main():
                 # initiate startup sequence once connected
                 elif action == '255':
                     start_up(irc, config.channels, nicks.keys(), config.server)
+                     
                 # wait and then reconnect on disconnect
                 elif line.find('ERROR :Closing Link') != -1 or line.find('ERROR :Your host is trying to (re)connect too fast') != -1:
                     logging.info('LOG: Waiting 120 seconds before attempting reconnect...')
                     sleep(120)
                     logging.info('LOG: Attempting re-connect...')
                     irc.connect(config.server, config.port, config.botnick, config.ident, config.real_name)
+
         except KeyboardInterrupt:
             irc.command('QUIT Goodbye.')
             logging.info('LOG: Goodbye.')
