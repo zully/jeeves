@@ -262,7 +262,7 @@ def main():
     global CONNECTING
     CONNECTING = True
     try:
-        thread.start_new_thread(connection_test_timer, irc)
+        thread.start_new_thread(connection_test_timer, (irc,))
     except:
         logging.exception('LOG: Unable to start thread!')
 
@@ -302,7 +302,7 @@ def main():
                                 config.ident, config.real_name)
                     CONNECTING = True
                     try:
-                        thread.start_new_thread(connection_test_timer, irc)
+                        thread.start_new_thread(connection_test_timer, (irc,))
                     except:
                         logging.exception('LOG: Unable to start thread!')
 
