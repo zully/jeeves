@@ -205,7 +205,7 @@ def perform_op(irc, split_line, botnick, master):
 
 
 # timer function
-def threaded_timer(irc, nicks):
+def ison_timer(irc, nicks):
     while True:
         irc.command('ISON %s' % nicks)
         time.sleep(150)
@@ -213,14 +213,16 @@ def threaded_timer(irc, nicks):
 
 
 def connection_test_timer(irc):
-    logging.info("connection test timer started")
     time.sleep(30)
     global CONNECTING
     if CONNECTING:
-        logging.info("still waiting for connection, restarting")
+        logging.info("Connection Unsuccessful, re-attempting...")
         irc.connect(config.server, config.port, config.botnick,
                     config.ident, config.real_name)
-        CONNECTING = True
+        try:
+            thread.start_new_thread(connection_test_timer, (irc,))
+        except:
+            logging.exception('LOG: Unable to start thread!')
     return
 
 
@@ -239,7 +241,7 @@ def start_up(irc, channels, nicks, server):
         for channel in channels:
             irc.command('JOIN %s' % channel)
         try:
-            thread.start_new_thread(threaded_timer, (irc, ' '.join(nicks), ))
+            thread.start_new_thread(ison_timer, (irc, ' '.join(nicks), ))
         except:
             logging.exception('LOG: Unable to start thread!')
     return
