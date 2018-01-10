@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, socket, logging, thread, time, signal, sys, smtplib, config # noqa
+import os, sys, socket, logging, thread, time, signal, smtplib, config # noqa
+
+CONNECTING = False
 
 
 class IRC:
@@ -39,7 +41,8 @@ def open_file(filename):
         try:
             f = open(filename, 'r')
         except IOError as e:
-            logging.exception('LOG: I/O error({0}): {1}'.format(e.errno, e.strerror)) # noqa
+            logging.exception('LOG: I/O error({0}): {1}'.format(e.errno,
+                                                                e.strerror))
             sys.exit(1)
         except:  # Handle other exceptions such as attribute errors
             logging.exception('LOG: Unexpected error: ', sys.exc_info()[0])
@@ -209,6 +212,16 @@ def threaded_timer(irc, nicks):
     return
 
 
+def connection_test_timer(irc):
+    time.sleep(30)
+    global CONNECTING
+    if CONNECTING:
+        irc.connect(config.server, config.port, config.botnick,
+                    config.ident, config.real_name)
+        CONNECTING = True
+    return
+
+
 # send pong response to server
 def send_pong(irc, line):
     response = 'PONG %s\r\n' % line.split()[1]
@@ -244,6 +257,9 @@ def main():
     irc = IRC()
     irc.connect(config.server, config.port, config.botnick,
                 config.ident, config.real_name)
+    global CONNECTING
+    CONNECTING = True
+    thread.start_new_thread(connection_test_timer, (irc))
 
     while True:
         try:
@@ -270,6 +286,7 @@ def main():
                 # initiate startup sequence once connected
                 elif action == '255':
                     start_up(irc, config.channels, nicks.keys(), config.server)
+                    CONNECTING = False
 
                 # wait and then reconnect on disconnect
                 elif line.find('ERROR :Closing Link') != -1 or line.find('ERROR :Your host is trying to (re)connect too fast') != -1: # noqa
@@ -278,6 +295,8 @@ def main():
                     logging.info('LOG: Attempting re-connect...')
                     irc.connect(config.server, config.port, config.botnick,
                                 config.ident, config.real_name)
+                    CONNECTING = True
+                    thread.start_new_thread(connection_test_timer, (irc))
 
         except KeyboardInterrupt:
             irc.command('QUIT Goodbye.')
