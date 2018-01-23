@@ -59,7 +59,6 @@ def read_file(filename, ft):
         data = {}
     else:
         data = []
-
     for line in f:
         if ft == 'notify':
             working_array = line.rstrip('\n').split(':')
@@ -70,7 +69,7 @@ def read_file(filename, ft):
         else:
             data = line
     if f is not None:
-       f.close()
+        f.close()
     if ft == 'notify':
         logging.info('LOG: Notifying on: %s' % ', '.join(data.keys()))
     return data
