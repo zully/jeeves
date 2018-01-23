@@ -53,29 +53,27 @@ def open_file(filename):
     return f
 
 
-# read the notify list
-def read_notifylist(notify_list):
-    f = open_file(notify_list)
-    nicks = {}
-    for line in f:
-        working_array = line.rstrip('\n').split(':')
-        working_array.insert(1, 0)
-        nicks[working_array[0]] = working_array[1:]
-    if f is not None:
-        f.close()
-    logging.info('LOG: Notifying on: %s' % ', '.join(nicks.keys()))
-    return nicks
+def read_file(filename, ft):
+    f = open_file(filename)
+    if ft == 'notify':
+        data = {}
+    else:
+        data = []
 
-
-# read master file
-def read_master(master_file):
-    f = open_file(master_file)
-    master = []
     for line in f:
-        master = line.rstrip('\n').split(':')
+        if ft == 'notify':
+            working_array = line.rstrip('\n').split(':')
+            working_array.insert(1, 0)
+            data[working_array[0]] = working_array[1:]
+        elif ft == 'master':
+            data = line.rstrip('\n').split(':')
+        else:
+            data = line
     if f is not None:
-        f.close()
-    return master
+       f.close()
+    if ft == 'notify':
+        logging.info('LOG: Notifying on: %s' % ', '.join(data.keys()))
+    return data
 
 
 # Send message to user that a friend is on IRC
@@ -254,8 +252,8 @@ set_up_logs(config.home_dir, config.botnick)
 def main():
 
     # read configs
-    nicks = read_notifylist(config.home_dir + 'notify.list')
-    master = read_master(config.home_dir + 'master.conf')
+    nicks = read_file(config.home_dir + 'notify.list', 'notify')
+    master = read_file(config.home_dir + 'master.conf', 'master')
 
     # configure IRC object and connect
     irc = IRC()
