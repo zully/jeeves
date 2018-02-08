@@ -75,14 +75,11 @@ def read_file(filename, ft):
     return data
 
 
-# Send message to user that a friend is on IRC
-def send_message(from_addy, to_addy, message):
-    try:
-        smtpObj = smtplib.SMTP('localhost')
-        smtpObj.sendmail(to_addy, from_addy, message)
-        logging.info('LOG: Message sent! MSG: %s' % message)
-    except:
-        logging.exception('LOG: Unexpected error: ', sys.exc_info()[0])
+# send pong response to server
+def send_pong(irc, line):
+    response = 'PONG %s\r\n' % line.split()[1]
+    irc.command(response)
+    logging.info('RAW: %s' % response.rstrip())
     return
 
 
@@ -118,6 +115,17 @@ def get_masks(irc, ison, nicks):
                     logging.info('LOG: %s (UNKNOWN) has left IRC.' % n)
                 nicks[n][0] = 0
     return nicks
+
+
+# Send message to user that a friend is on IRC
+def send_message(from_addy, to_addy, message):
+    try:
+        smtpObj = smtplib.SMTP('localhost')
+        smtpObj.sendmail(to_addy, from_addy, message)
+        logging.info('LOG: Message sent! MSG: %s' % message)
+    except:
+        logging.exception('LOG: Unexpected error: ', sys.exc_info()[0])
+    return
 
 
 # run a few more checks and notify the user if passed
@@ -158,21 +166,6 @@ def notify_user(to_addy, from_addy, split_line, nicks):
     return nicks
 
 
-def set_up_logs(home_dir, botnick):
-    # Configure logging
-    logging.basicConfig(filename=('%s%s.log' % (home_dir, botnick.lower())),
-                        format='%(asctime)s %(message)s',
-                        datefmt='%b %d %H:%M:%S',
-                        level=logging.DEBUG)
-    return
-
-
-def signal_handler(signum, frame):
-    if signum == 15:
-        raise KeyboardInterrupt('Exit Gracefully')
-    return
-
-
 # perform the operation indicated
 def perform_op(irc, split_line, botnick, master):
     tmp = split_line[0].split('!', 1)
@@ -201,6 +194,21 @@ def perform_op(irc, split_line, botnick, master):
     return
 
 
+def set_up_logs(home_dir, botnick):
+    # Configure logging
+    logging.basicConfig(filename=('%s%s.log' % (home_dir, botnick.lower())),
+                        format='%(asctime)s %(message)s',
+                        datefmt='%b %d %H:%M:%S',
+                        level=logging.DEBUG)
+    return
+
+
+def signal_handler(signum, frame):
+    if signum == 15:
+        raise KeyboardInterrupt('Exit Gracefully')
+    return
+
+
 # timer function
 def ison_timer(irc, nicks):
     while True:
@@ -220,14 +228,6 @@ def connection_test_timer(irc):
             thread.start_new_thread(connection_test_timer, (irc,))
         except:
             logging.exception('LOG: Unable to start thread!')
-    return
-
-
-# send pong response to server
-def send_pong(irc, line):
-    response = 'PONG %s\r\n' % line.split()[1]
-    irc.command(response)
-    logging.info('RAW: %s' % response.rstrip())
     return
 
 
