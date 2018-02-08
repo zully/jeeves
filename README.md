@@ -1,4 +1,4 @@
-# jeeves v0.05-beta
+# jeeves v0.09-beta
 
 jeeves is an IRC bot (under early development) written in Python.  The test application that is being developed has been tested and is currently running on Python 2.7.5.  The Jeeves bot will remain online and text/e-mail you when your friends connect to IRC.  A config.py, notify.list, and master.conf file are required for operation.  A sample service file, as well as sample required files are below:
 
