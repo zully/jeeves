@@ -213,7 +213,7 @@ def signal_handler(signum, frame):
 def ison_timer(irc, nicks):
     while True:
         irc.command('ISON %s' % nicks)
-        time.sleep(150)
+        time.sleep(300)
     return
 
 
